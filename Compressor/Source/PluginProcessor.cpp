@@ -19,9 +19,23 @@ CompressorAudioProcessor::CompressorAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ),
+    compressor(getSampleRate(), 1.f, 10.f, 0.f, 1.f, 0.f) // Initialize Compressor with default parameters
 #endif
 {
+    attackTimeParameter = new juce::AudioParameterFloat(juce::ParameterID("1", 1), "Attack Time Knob", 1.f, 100.f, 0.1f);
+    releaseTimeParameter = new juce::AudioParameterFloat(juce::ParameterID("2", 2), "Release Time Knob", 10.f, 1000.f, 10.f);
+    thresholdParameter = new juce::AudioParameterFloat(juce::ParameterID("3", 3), "Threshold Knob", -60.f, 0.f, 1.f);
+    ratioParameter = new juce::AudioParameterFloat(juce::ParameterID("4", 4), "Ratio Knob", 1.f, 20.f, 0.1f);
+    makeupGainParameter = new juce::AudioParameterFloat(juce::ParameterID("5", 5), "Makeup Gain Knob", 0.f, 20.f, 0.1f);
+
+    addParameter(attackTimeParameter);
+    addParameter(releaseTimeParameter);
+    addParameter(thresholdParameter);
+    addParameter(ratioParameter);
+    addParameter(makeupGainParameter);
+
+
 }
 
 CompressorAudioProcessor::~CompressorAudioProcessor()
@@ -135,27 +149,10 @@ void CompressorAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
-    // In case we have more outputs than inputs, this code clears any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
-    // This is here to avoid people getting screaming feedback
-    // when they first compile a plugin, but obviously you don't need to keep
-    // this code if your algorithm always overwrites all the output channels.
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
-    {
-        auto* channelData = buffer.getWritePointer (channel);
-
-        // ..do something to the data...
-    }
+    compressor.ProcessBuffer(buffer);
 }
 
 //==============================================================================
@@ -166,7 +163,8 @@ bool CompressorAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* CompressorAudioProcessor::createEditor()
 {
-    return new CompressorAudioProcessorEditor (*this);
+    //return new CompressorAudioProcessorEditor (*this);
+    return new juce::GenericAudioProcessorEditor(*this);
 }
 
 //==============================================================================

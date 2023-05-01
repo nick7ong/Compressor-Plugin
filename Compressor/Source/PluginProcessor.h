@@ -9,6 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "Compressor.h"
 
 //==============================================================================
 /**
@@ -58,5 +59,21 @@ public:
 
 private:
     //==============================================================================
+
+    juce::AudioParameterFloat* attackTimeParameter;
+    juce::AudioParameterFloat* releaseTimeParameter;
+    juce::AudioParameterFloat* thresholdParameter;
+    juce::AudioParameterFloat* ratioParameter;
+    juce::AudioParameterFloat* makeupGainParameter;
+
+    // Current state variables
+    float currentAttackTime;
+    float currentReleaseTime;
+    float currentThreshold;
+    float currentRatio;
+    float currentGain;
+
+    Compressor compressor;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CompressorAudioProcessor)
 };
