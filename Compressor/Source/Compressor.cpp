@@ -19,21 +19,22 @@ Compressor::Compressor(double sampleRate, float attackTime, float releaseTime,
     this->threshold = threshold;
     this->ratio = ratio;
     this->makeupGain = makeupGain;
-
-    this->bufferSize = 480;
-    gain.resize(bufferSize);
-    std::fill(gain.begin(), gain.end(), 0.0);
 }
 Compressor::~Compressor() {}
 
-void Compressor::updateParameters(float newAttackTime, float newReleaseTime, float newThreshold,
+void Compressor::updateParameters(double sampleRate, float newAttackTime, float newReleaseTime, float newThreshold,
                                   float newRatio, float newMakeupGain)
 {
+    this->sampleRate = sampleRate;
     attackTime = newAttackTime;
     releaseTime = newReleaseTime;
     threshold = newThreshold;
     ratio = newRatio;
     makeupGain = newMakeupGain;
+
+    /*this->bufferSize = 480;
+    gain.resize(bufferSize);
+    std::fill(gain.begin(), gain.end(), 0.0);*/
 }
 
 std::vector<float> Compressor::EnvelopeDetector(juce::AudioBuffer<float>& inBuffer)
@@ -75,6 +76,8 @@ std::vector<float> Compressor::EnvelopeDetector(juce::AudioBuffer<float>& inBuff
 void Compressor::GainComputer(std::vector<float> envelopeValues)
 {
     std::vector<float> dBOut(envelopeValues.size(), 0.0);
+    gain.resize(envelopeValues.size());
+
 
     for (int val = 0; val < envelopeValues.size(); val++) {
         //Below Knee/Threshold

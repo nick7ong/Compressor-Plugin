@@ -25,6 +25,63 @@ CompressorAudioProcessorEditor::CompressorAudioProcessorEditor (CompressorAudioP
     addAndMakeVisible(makeupGainKnob);
 
     // Configure GUI components
+    attackTimeKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag);
+    attackTimeKnob.setColour(juce::Slider::ColourIds::thumbColourId, juce::Colour::fromRGB(255, 99, 72));
+    attackTimeKnob.setColour(juce::Slider::ColourIds::rotarySliderFillColourId, juce::Colour::fromRGB(245, 126, 105));
+    attackTimeKnob.setColour(juce::Slider::ColourIds::rotarySliderOutlineColourId, juce::Colour::fromRGB(241, 242, 246));
+    attackTimeKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
+    attackTimeKnob.setColour(juce::Slider::ColourIds::textBoxTextColourId, juce::Colour::fromRGB(255, 99, 72));
+    attackTimeKnob.setColour(juce::Slider::ColourIds::textBoxOutlineColourId, juce::Colour::fromRGB(245, 126, 105));
+
+
+    releaseTimeKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag);
+    releaseTimeKnob.setColour(juce::Slider::ColourIds::thumbColourId, juce::Colour::fromRGB(255, 99, 72));
+    releaseTimeKnob.setColour(juce::Slider::ColourIds::rotarySliderFillColourId, juce::Colour::fromRGB(245, 126, 105));
+    releaseTimeKnob.setColour(juce::Slider::ColourIds::rotarySliderOutlineColourId, juce::Colour::fromRGB(241, 242, 246));
+    releaseTimeKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
+    releaseTimeKnob.setColour(juce::Slider::ColourIds::textBoxTextColourId, juce::Colour::fromRGB(255, 99, 72));
+    releaseTimeKnob.setColour(juce::Slider::ColourIds::textBoxOutlineColourId, juce::Colour::fromRGB(245, 126, 105));
+
+    thresholdKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag);
+    thresholdKnob.setColour(juce::Slider::ColourIds::thumbColourId, juce::Colour::fromRGB(255, 99, 72));
+    thresholdKnob.setColour(juce::Slider::ColourIds::rotarySliderFillColourId, juce::Colour::fromRGB(245, 126, 105));
+    thresholdKnob.setColour(juce::Slider::ColourIds::rotarySliderOutlineColourId, juce::Colour::fromRGB(241, 242, 246));
+    thresholdKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
+    thresholdKnob.setColour(juce::Slider::ColourIds::textBoxTextColourId, juce::Colour::fromRGB(255, 99, 72));
+    thresholdKnob.setColour(juce::Slider::ColourIds::textBoxOutlineColourId, juce::Colour::fromRGB(245, 126, 105));
+
+    ratioKnob.setSliderStyle(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag);
+    ratioKnob.setColour(juce::Slider::ColourIds::thumbColourId, juce::Colour::fromRGB(255, 99, 72));
+    ratioKnob.setColour(juce::Slider::ColourIds::rotarySliderFillColourId, juce::Colour::fromRGB(245, 126, 105));
+    ratioKnob.setColour(juce::Slider::ColourIds::rotarySliderOutlineColourId, juce::Colour::fromRGB(241, 242, 246));
+    ratioKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
+    ratioKnob.setColour(juce::Slider::ColourIds::textBoxTextColourId, juce::Colour::fromRGB(255, 99, 72));
+    ratioKnob.setColour(juce::Slider::ColourIds::textBoxOutlineColourId, juce::Colour::fromRGB(245, 126, 105));
+
+    makeupGainKnob.setSliderStyle(juce::Slider::SliderStyle::LinearHorizontal);
+    makeupGainKnob.setColour(juce::Slider::ColourIds::thumbColourId, juce::Colour::fromRGB(255, 99, 72));
+    makeupGainKnob.setColour(juce::Slider::ColourIds::backgroundColourId, juce::Colour::fromRGB(245, 126, 105));
+    makeupGainKnob.setColour(juce::Slider::ColourIds::trackColourId, juce::Colour::fromRGB(241, 242, 246));
+    makeupGainKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
+    makeupGainKnob.setColour(juce::Slider::ColourIds::textBoxTextColourId, juce::Colour::fromRGB(255, 99, 72));
+    makeupGainKnob.setColour(juce::Slider::ColourIds::textBoxOutlineColourId, juce::Colour::fromRGB(245, 126, 105));
+
+    //Label Components
+    attackTimeLabel.setText("Attack", juce::dontSendNotification);
+    attackTimeLabel.setColour(juce::Label::ColourIds::textColourId, juce::Colour::fromRGB(255, 99, 72));
+
+    releaseTimeLabel.setText("Release", juce::dontSendNotification);
+    releaseTimeLabel.setColour(juce::Label::ColourIds::textColourId, juce::Colour::fromRGB(255, 99, 72));
+
+    thresholdLabel.setText("Threshold", juce::dontSendNotification);
+    thresholdLabel.setColour(juce::Label::ColourIds::textColourId, juce::Colour::fromRGB(255, 99, 72));
+    
+    ratioLabel.setText("Ratio", juce::dontSendNotification);
+    ratioLabel.setColour(juce::Label::ColourIds::textColourId, juce::Colour::fromRGB(255, 99, 72));
+    
+    makeupGainLabel.setText("Makeup Gain", juce::dontSendNotification);
+    makeupGainLabel.setColour(juce::Label::ColourIds::textColourId, juce::Colour::fromRGB(255, 99, 72));
+
 
     // Set and link parameters pluginProcessor to GUI Objects with parameterTree
     auto parameterTree = audioProcessor.getParameters();
@@ -73,10 +130,20 @@ CompressorAudioProcessorEditor::~CompressorAudioProcessorEditor()
 void CompressorAudioProcessorEditor::paint (juce::Graphics& g)
 {
     g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    g.fillAll(juce::Colour::fromRGB(225, 224, 214));
 }
 
 void CompressorAudioProcessorEditor::resized()
 {
-    // This is generally where you'll want to lay out the positions of any
-    // subcomponents in your editor..
+    attackTimeKnob.setBounds(-20, 40, 200, 100);
+    releaseTimeKnob.setBounds(140, 40, 280, 140);
+    thresholdKnob.setBounds(140, 40, 280, 140);
+    ratioKnob.setBounds(140, 40, 280, 140);
+    makeupGainKnob.setBounds(140, 40, 140, 140);
+
+    attackTimeLabel.setBounds(85, 20, 100, 20);
+    releaseTimeLabel.setBounds(258, 20, 100, 20);
+    thresholdLabel.setBounds(258, 20, 100, 20);
+    ratioLabel.setBounds(258, 20, 100, 20);
+    makeupGainLabel.setBounds(258, 20, 100, 20);
 }

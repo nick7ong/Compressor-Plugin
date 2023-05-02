@@ -19,7 +19,7 @@ public:
                float threshold, float ratio, float makeupGain);
     ~Compressor();
 
-    void updateParameters(float newAttackTime, float newReleaseTime, float newThreshold,
+    void updateParameters(double sampleRate, float newAttackTime, float newReleaseTime, float newThreshold,
                           float newRatio, float newMakeupGain);
     std::vector<float> EnvelopeDetector(juce::AudioBuffer<float>&);
     void GainComputer(std::vector<float>);

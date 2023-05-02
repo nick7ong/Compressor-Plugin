@@ -35,6 +35,14 @@ CompressorAudioProcessor::CompressorAudioProcessor()
     addParameter(ratioParameter);
     addParameter(makeupGainParameter);
 
+    double fs = 48000;
+    compressor.updateParameters(fs, *attackTimeParameter, *releaseTimeParameter, *thresholdParameter, 
+                                *ratioParameter, *makeupGainParameter);
+    currentAttackTime = *attackTimeParameter;
+    currentReleaseTime = *releaseTimeParameter;
+    currentThreshold = *thresholdParameter;
+    currentRatio = *ratioParameter;
+    currentGain = *makeupGainParameter;
 
 }
 
@@ -109,6 +117,7 @@ void CompressorAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+
 }
 
 void CompressorAudioProcessor::releaseResources()
@@ -151,6 +160,17 @@ void CompressorAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
+    
+    if (*attackTimeParameter != currentAttackTime || *releaseTimeParameter != currentReleaseTime || 
+        *thresholdParameter != currentThreshold || *ratioParameter != currentRatio || *makeupGainParameter != currentGain) {
+        compressor.updateParameters(getSampleRate(), *attackTimeParameter, *releaseTimeParameter, *thresholdParameter,
+            *ratioParameter, *makeupGainParameter);
+        currentAttackTime = *attackTimeParameter;
+        currentReleaseTime = *releaseTimeParameter;
+        currentThreshold = *thresholdParameter;
+        currentRatio = *ratioParameter;
+        currentGain = *makeupGainParameter;
+    }
 
     compressor.ProcessBuffer(buffer);
 }
@@ -163,8 +183,8 @@ bool CompressorAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* CompressorAudioProcessor::createEditor()
 {
-    //return new CompressorAudioProcessorEditor (*this);
-    return new juce::GenericAudioProcessorEditor(*this);
+    return new CompressorAudioProcessorEditor (*this);
+    //return new juce::GenericAudioProcessorEditor(*this);
 }
 
 //==============================================================================
