@@ -3,7 +3,7 @@
 
     Compressor.h
     Created: 1 May 2023 2:43:52pm
-    Author:  nnjto
+    Author:  Nicholas Tong
 
   ==============================================================================
 */
@@ -21,22 +21,22 @@ public:
 
     void updateParameters(double sampleRate, float newAttackTime, float newReleaseTime, float newThreshold,
                           float newRatio, float newMakeupGain);
-    std::vector<float> EnvelopeDetector(juce::AudioBuffer<float>&);
-    void GainComputer(std::vector<float>);
+    float EnvelopeDetector(float inSample, int numChannels);
+    void GainComputer(float gainValue);
     void ProcessBuffer(juce::AudioBuffer<float>&);
+    void ResetValues();
 
 private:
     double sampleRate;
-    int bufferSize;
 
     // Envelope Detector Variables
-    float attackTime, releaseTime;
+    float attackTime, releaseTime, forwardValue, delayValue;
 
     // Gain Computer Variables
     float threshold, ratio;
 
     // DCAand Gain
-    std::vector<float> gain;
+    float gain;
     float makeupGain;
 
 };

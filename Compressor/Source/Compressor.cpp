@@ -19,6 +19,8 @@ Compressor::Compressor(double sampleRate, float attackTime, float releaseTime,
     this->threshold = threshold;
     this->ratio = ratio;
     this->makeupGain = makeupGain;
+    forwardValue = 0.f;
+    delayValue = 0.f;
 }
 Compressor::~Compressor() {}
 
@@ -31,77 +33,66 @@ void Compressor::updateParameters(double sampleRate, float newAttackTime, float 
     threshold = newThreshold;
     ratio = newRatio;
     makeupGain = newMakeupGain;
-
-    /*this->bufferSize = 480;
-    gain.resize(bufferSize);
-    std::fill(gain.begin(), gain.end(), 0.0);*/
 }
 
-std::vector<float> Compressor::EnvelopeDetector(juce::AudioBuffer<float>& inBuffer)
+void Compressor::ResetValues() 
 {
-    std::vector<float> envelopeValues(inBuffer.getNumSamples());
+    forwardValue = 0.f;
+    delayValue = 0.f;
+}
 
+float Compressor::EnvelopeDetector(float inSample, int numChannels)
+{
     // Rectify the input signal
-    for (int channel = 0; channel < inBuffer.getNumChannels(); channel++) 
-    {
-        for (int sample = 0; sample < inBuffer.getNumSamples(); sample++) 
-        {
-            inBuffer.setSample(channel, sample, std::abs(inBuffer.getSample(channel, sample)));
-        }
-    }
+    float rectifiedSample = std::abs(inSample);
 
     // RC Simulator
     // Compute coefficients of filter with on attack and release time
     float Tc = log(0.368);
     float a0 = Tc / (exp(sampleRate * attackTime * 0.001));
     float b1 = Tc / (exp(sampleRate * releaseTime * 0.001));
-    std::vector<float> rcBuffer(inBuffer.getNumSamples(), 0.0);
-    float forwardValue = 0.0;
-    float delayValue = 0.0;
 
-    for (int sample = 0; sample < inBuffer.getNumSamples(); sample++) 
-    {
-        forwardValue = a0 * (pow(inBuffer.getSample(0, sample), 2) + b1 * delayValue);
-        rcBuffer[sample] = pow(inBuffer.getSample(0, sample), 2) + forwardValue;
-        delayValue = rcBuffer[sample];
+    // Calculate the forward value and update the delay value
+    forwardValue = a0 * (pow(rectifiedSample, 2) + b1 * delayValue);
+    delayValue = pow(rectifiedSample, 2) + forwardValue;
+
+    // Calculate the RC value
+    float rcValue = sqrt(delayValue);
+
+    // Update the envelope value with the largest RC value from both channels
+    if (numChannels == 2) {
+        rcValue = std::max(rcValue, sqrt(forwardValue));
     }
 
-    // log dB Conversion
-    for (int sample = 0; sample < inBuffer.getNumSamples(); ++sample) {
-        envelopeValues[sample] = 20 * log10(sqrt(rcBuffer[sample]));
-    }
-
-    return envelopeValues;
+    return 20 * log10(rcValue);
 }
-void Compressor::GainComputer(std::vector<float> envelopeValues)
+
+void Compressor::GainComputer(float envelopeValue)
 {
-    std::vector<float> dBOut(envelopeValues.size(), 0.0);
-    gain.resize(envelopeValues.size());
-
-
-    for (int val = 0; val < envelopeValues.size(); val++) {
-        //Below Knee/Threshold
-        if (envelopeValues[val] < threshold)
-            dBOut[val] = envelopeValues[val];
-        //Above Knee/Threshold
-        if (envelopeValues[val] > threshold)
-            dBOut[val] = threshold + (envelopeValues[val] - threshold / ratio);
-    }
+    float dBOut = 0.0;
+    
+    //Below Knee/Threshold
+    if (envelopeValue < threshold)
+        dBOut = envelopeValue;
+    //Above Knee/Threshold
+    if (envelopeValue > threshold)
+        dBOut = threshold + (envelopeValue - threshold / ratio);
 
     // Convert to lin()
-    for (int n = 0; n < gain.size(); ++n) {
-        gain[n] = pow(10.0, (dBOut[n] - envelopeValues[n]) / 20.0);
-    }
+    gain = pow(10.0, (dBOut - envelopeValue) / 20.0);
 }
+
 void Compressor::ProcessBuffer(juce::AudioBuffer<float>& inBuffer)
 {
-    std::vector<float> envelopeValues = EnvelopeDetector(inBuffer);
-    GainComputer(envelopeValues);
+    int numChannels = inBuffer.getNumChannels();
+    int numSamples = inBuffer.getNumSamples();
 
-    for (int channel = 0; channel < inBuffer.getNumChannels(); channel++) {
+    for (int channel = 0; channel < numChannels; channel++) {
         auto* channelData = inBuffer.getWritePointer(channel);
-        for (int sample = 0; sample < inBuffer.getNumSamples(); sample++) {
-            channelData[sample] *= gain[sample] * makeupGain;
+        for (int sample = 0; sample < numSamples; sample++) {
+            float envelopeValue = EnvelopeDetector(channelData[sample], numChannels);
+            GainComputer(envelopeValue);
+            channelData[sample] *= gain * (1.f + makeupGain);
         }
     }
 }

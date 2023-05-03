@@ -1,19 +1,9 @@
-/*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin processor.
-
-  ==============================================================================
-*/
-
 #pragma once
 
 #include <JuceHeader.h>
 #include "Compressor.h"
 
 //==============================================================================
-/**
-*/
 class CompressorAudioProcessor  : public juce::AudioProcessor
                             #if JucePlugin_Enable_ARA
                              , public juce::AudioProcessorARAExtension
@@ -57,9 +47,10 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+
 private:
     //==============================================================================
-
+    // Audio Parameter Pointers
     juce::AudioParameterFloat* attackTimeParameter;
     juce::AudioParameterFloat* releaseTimeParameter;
     juce::AudioParameterFloat* thresholdParameter;

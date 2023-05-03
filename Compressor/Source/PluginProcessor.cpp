@@ -1,11 +1,3 @@
-/*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin processor.
-
-  ==============================================================================
-*/
-
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
@@ -23,6 +15,8 @@ CompressorAudioProcessor::CompressorAudioProcessor()
     compressor(getSampleRate(), 1.f, 10.f, 0.f, 1.f, 0.f) // Initialize Compressor with default parameters
 #endif
 {
+    //==============================================================================
+    // Add Parameters to processor
     attackTimeParameter = new juce::AudioParameterFloat(juce::ParameterID("1", 1), "Attack Time Knob", 1.f, 100.f, 0.1f);
     releaseTimeParameter = new juce::AudioParameterFloat(juce::ParameterID("2", 2), "Release Time Knob", 10.f, 1000.f, 10.f);
     thresholdParameter = new juce::AudioParameterFloat(juce::ParameterID("3", 3), "Threshold Knob", -60.f, 0.f, 1.f);
@@ -35,7 +29,9 @@ CompressorAudioProcessor::CompressorAudioProcessor()
     addParameter(ratioParameter);
     addParameter(makeupGainParameter);
 
-    double fs = 48000;
+    //==============================================================================
+    // Update Parameters
+    double fs = getSampleRate();
     compressor.updateParameters(fs, *attackTimeParameter, *releaseTimeParameter, *thresholdParameter, 
                                 *ratioParameter, *makeupGainParameter);
     currentAttackTime = *attackTimeParameter;
@@ -43,7 +39,6 @@ CompressorAudioProcessor::CompressorAudioProcessor()
     currentThreshold = *thresholdParameter;
     currentRatio = *ratioParameter;
     currentGain = *makeupGainParameter;
-
 }
 
 CompressorAudioProcessor::~CompressorAudioProcessor()
@@ -115,9 +110,8 @@ void CompressorAudioProcessor::changeProgramName (int index, const juce::String&
 //==============================================================================
 void CompressorAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
-
+    // Reset forward and delay values in compressor class
+    compressor.ResetValues();
 }
 
 void CompressorAudioProcessor::releaseResources()

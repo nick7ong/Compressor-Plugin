@@ -1,19 +1,9 @@
-/*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin editor.
-
-  ==============================================================================
-*/
-
 #pragma once
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 
 //==============================================================================
-/**
-*/
 class CompressorAudioProcessorEditor  : public juce::AudioProcessorEditor
 {
 public:
@@ -25,8 +15,6 @@ public:
     void resized() override;
 
 private:
-    // This reference is provided as a quick way for your editor to
-    // access the processor object that created it.
     CompressorAudioProcessor& audioProcessor;
 
     juce::Slider attackTimeKnob;
@@ -37,7 +25,7 @@ private:
     juce::Label thresholdLabel;
     juce::Slider ratioKnob;
     juce::Label ratioLabel;
-    juce::Slider makeupGainKnob;
+    juce::Slider makeupGainSlider;
     juce::Label makeupGainLabel;
 
     juce::AudioParameterFloat* attackTimeParameter;
@@ -45,6 +33,7 @@ private:
     juce::AudioParameterFloat* thresholdParameter;
     juce::AudioParameterFloat* ratioParameter;
     juce::AudioParameterFloat* makeupGainParameter;
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CompressorAudioProcessorEditor)
 };
