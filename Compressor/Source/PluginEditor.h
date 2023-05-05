@@ -17,6 +17,7 @@ public:
 private:
     CompressorAudioProcessor& audioProcessor;
 
+    // GUI Components
     juce::Slider attackTimeKnob;
     juce::Label attackTimeLabel;
     juce::Slider releaseTimeKnob;
@@ -28,6 +29,7 @@ private:
     juce::Slider makeupGainSlider;
     juce::Label makeupGainLabel;
 
+    // Audio Parameters
     juce::AudioParameterFloat* attackTimeParameter;
     juce::AudioParameterFloat* releaseTimeParameter;
     juce::AudioParameterFloat* thresholdParameter;

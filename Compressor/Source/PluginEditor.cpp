@@ -115,10 +115,10 @@ CompressorAudioProcessorEditor::CompressorAudioProcessorEditor (CompressorAudioP
     thresholdKnob.setRange(thresholdParameter->range.start, thresholdParameter->range.end, thresholdParameter->range.interval);
     ratioKnob.setRange(ratioParameter->range.start, ratioParameter->range.end, ratioParameter->range.interval);
     makeupGainSlider.setRange(makeupGainParameter->range.start, makeupGainParameter->range.end, makeupGainParameter->range.interval);
-    attackTimeKnob.setValue(1.0, juce::NotificationType::dontSendNotification);
-    releaseTimeKnob.setValue(10.0, juce::NotificationType::dontSendNotification);
-    thresholdKnob.setValue(0.0, juce::NotificationType::dontSendNotification);
-    ratioKnob.setValue(1.0, juce::NotificationType::dontSendNotification);
+    attackTimeKnob.setValue(30.0, juce::NotificationType::dontSendNotification);
+    releaseTimeKnob.setValue(100.0, juce::NotificationType::dontSendNotification);
+    thresholdKnob.setValue(-10.0, juce::NotificationType::dontSendNotification);
+    ratioKnob.setValue(4.0, juce::NotificationType::dontSendNotification);
     makeupGainSlider.setValue(0.0, juce::NotificationType::dontSendNotification);
 
     //==============================================================================
@@ -158,7 +158,7 @@ void CompressorAudioProcessorEditor::resized()
     int y = getHeight() / 10;
 
     //==============================================================================
-    // Set bounds
+    // Set scalable bounds
     attackTimeKnob.setBounds(0.2 * x, 0.2 * y, 4.8 * x, 4 * y);
     releaseTimeKnob.setBounds(5 * x, 0.2 * y, 4.8 * x, 4 * y);
     thresholdKnob.setBounds(0.2 * x, 4.3 * y, 4.8 * x, 4 * y);

@@ -12,16 +12,16 @@ CompressorAudioProcessor::CompressorAudioProcessor()
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
                        ),
-    compressor(getSampleRate(), 1.f, 10.f, 0.f, 1.f, 0.f) // Initialize Compressor with default parameters
+    compressor(getSampleRate(), 30.f, 100.f, -10.f, 4.f, 0.f) // Initialize Compressor with default parameters
 #endif
 {
     //==============================================================================
     // Add Parameters to processor
-    attackTimeParameter = new juce::AudioParameterFloat(juce::ParameterID("1", 1), "Attack Time Knob", 1.f, 100.f, 0.1f);
-    releaseTimeParameter = new juce::AudioParameterFloat(juce::ParameterID("2", 2), "Release Time Knob", 10.f, 1000.f, 10.f);
-    thresholdParameter = new juce::AudioParameterFloat(juce::ParameterID("3", 3), "Threshold Knob", -60.f, 0.f, 1.f);
-    ratioParameter = new juce::AudioParameterFloat(juce::ParameterID("4", 4), "Ratio Knob", 1.f, 20.f, 0.1f);
-    makeupGainParameter = new juce::AudioParameterFloat(juce::ParameterID("5", 5), "Makeup Gain Knob", 0.f, 20.f, 0.1f);
+    attackTimeParameter = new juce::AudioParameterFloat(juce::ParameterID("1", 1), "Attack Time Knob", 1.f, 100.f, 30.f);
+    releaseTimeParameter = new juce::AudioParameterFloat(juce::ParameterID("2", 2), "Release Time Knob", 10.f, 1000.f, 100.f);
+    thresholdParameter = new juce::AudioParameterFloat(juce::ParameterID("3", 3), "Threshold Knob", -60.f, 0.f, -10.f);
+    ratioParameter = new juce::AudioParameterFloat(juce::ParameterID("4", 4), "Ratio Knob", 1.f, 20.f, 4.f);
+    makeupGainParameter = new juce::AudioParameterFloat(juce::ParameterID("5", 5), "Makeup Gain Knob", 0.f, 20.f, 0.f);
 
     addParameter(attackTimeParameter);
     addParameter(releaseTimeParameter);
